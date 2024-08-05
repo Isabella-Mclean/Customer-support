@@ -1,8 +1,8 @@
 "use client"
 
-import { Box, Stack, TextField,Button } from "@mui/material"
-import { ST } from "next/dist/shared/lib/utils"
+import { Box, Stack, TextField,Button, Typography } from "@mui/material"
 import { useState } from "react"
+import backgroundImage from './background.jpg';
 
 export default function Home() {
   const [messages,setMessages] = useState([
@@ -42,7 +42,6 @@ export default function Home() {
     
   }
   
-
   return (
     <Box
     width="100vw"
@@ -50,14 +49,36 @@ export default function Home() {
     display="flex"
     flexDirection="column"
     justifyContent="center"
-    alignItems="center">
+    alignItems="center"
+    sx={{
+      backgroundImage:`url(${backgroundImage.src})` ,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}>
+      <Typography
+      width="550px"
+      bgcolor={"rgba(255, 255, 255, 0.7)"}
+      height="10%"
+      marginY={2}
+      borderRadius={6}
+      justifyContent="center"
+      alignItems="center"
+      display="flex"
+      fontSize={30}
+      fontFamily={"Outfit"}
+      color={"blueGrey"}
+      > 
+        Chat support</Typography>
       {/** The message history */}
       <Stack 
       direction={'column'} 
-      width="500px" 
-      height="95%" 
+      width="550px" 
+      height="85%" 
       spacing={2} 
-      border="1px solid black"
+      paddingY={2}
+      paddingX={2}
+      bgcolor={"rgba(255, 255, 255, 0.7)"}
+      borderRadius={6}
       >
         {/** These will be our actual messages */}
         <Stack 
@@ -76,7 +97,9 @@ export default function Home() {
                 bgcolor={message.role === 'assistant' ? 'primary.main' : 'secondary.main'}
                 color="white"
                 borderRadius={16}
-                p={3}>
+                p={3}
+                fontFamily={"Outfit"}
+                fontSize={18}>
                   {message.content}
                 </Box>
               </Box>
