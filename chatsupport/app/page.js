@@ -86,9 +86,9 @@ export default function Home() {
                 boxShadow: '0px 4px 10px 0px rgba(255, 255, 255, 0.85)',
                 color:"white"
             }}>
-                <Typography fontSize={25}> Welcome to our Chat Support service! </Typography>
+                <Typography fontSize={25}>Welcome to our Chat Support service! </Typography>
                 <Typography fontSize={25}>Please login or sign up using the buttons above</Typography>
-                <Typography fontSize={25}>We hope you have all questions answered</Typography>
+                <Typography fontSize={25}>We hope you will have all your questions answered</Typography>
             </Box>
             
         </Box>
