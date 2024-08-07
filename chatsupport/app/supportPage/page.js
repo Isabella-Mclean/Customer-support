@@ -46,7 +46,7 @@ export default function Home() {
         const text = decoder.decode(value || new Uint8Array(), {stream: true}) 
 
         // Split text at '**' and join with newlines
-        const formattedText = text.split('**').join(<br/>);
+        const formattedText = text.split('**').join('\n');
 
         setMessages((messages) => {
           let lastMessage = messages[messages.length-1]
