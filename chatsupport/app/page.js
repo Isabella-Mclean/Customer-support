@@ -1,121 +1,98 @@
 "use client"
+import { Box, Typography, AppBar, Toolbar, Button, IconButton, Link} from "@mui/material"
+import backgroundImage from './background2.jpg';
+import * as React from 'react';
+import {useUser} from "@auth0/nextjs-auth0/client"
+import { useRouter } from 'next/navigation';
 
-import { Box, Stack, TextField,Button, Typography } from "@mui/material"
-import { useState } from "react"
-import backgroundImage from './background.jpg';
 
 export default function Home() {
-  const [messages,setMessages] = useState([
-    {role:'assistant', content:`Hi! I'm the headstarter assistant, how can I help you today?`}
-  ])
-  const [message, setMessage] = useState('')
+    const {user,error, isLoading} = useUser()
+    const router = useRouter();
 
-  const sendMessage = async() =>{
-    setMessage('')
-    setMessages((messages)=>[...messages, 
-      {role:'user',content:message},
-      {role: 'assistant', content:''}])
-    const response = fetch('/api/chat', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-      },
-      body:JSON.stringify([...messages,{role:'user',content:message}]),
-    }).then( async (res)=>{
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder()
-      let result = ''
-      return reader.read().then(function processText({done,value}) {
-        if (done){
-          return result
-        }
-        const text = decoder.decode(value || new Uint8Array(), {stream: true}) 
-        setMessages((messages) => {
-          let lastMessage = messages[messages.length-1]
-          let otherMessages = messages.slice(0,messages.length-1)
-
-          return [...otherMessages, {...lastMessage,content:lastMessage.content+text}]
-        })
-        return reader.read().then(processText)
-      })
-    })
+    if(user){
+        router.push('/supportPage');
+    }
     
+
+    return(
+        <Box
+        width="100vw"
+        height="100vh"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+            backgroundImage:`url(${backgroundImage.src})` ,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+        }}
+        >
+            <Box  
+            width="100vw" 
+            height="10vh"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            display="flex"
+            position="fixed"
+            top={0}
+            left={0}
+            >
+                <AppBar 
+                position="static" 
+                sx={{
+                    backgroundColor:'rgba(0, 0, 0, 0.8)',
+                    boxShadow: '0px 4px 10px 0px rgba(255, 255, 255, 0.85)'
+                }}
+                >
+                    <Toolbar >
+                    <Link href = "" color="white" underline="none" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" >
+                        Chat Support
+                    </Typography>
+                    </Link>
+                   
+                    
+                    <Button 
+                    color="inherit" 
+                    variant="contained"
+                    sx={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                        marginX: "10px",
+                        boxShadow: '0px 4px 10px 0px rgba(255, 255, 255, 0.6)'
+                        }}>
+                    <Link href = "/api/auth/login" color="black" underline="none">
+                       Login
+                    </Link>
+                    </Button>
+                   
+                    </Toolbar>
+                </AppBar>
+            </Box>
+            <Box
+            width="70%"
+            height="60%"
+            paddingX={4}
+            marginY={2}
+            borderRadius={6}
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            display="flex"
+            sx={{
+                backgroundColor:'rgba(0, 0, 0, 0.7)',
+                boxShadow: '0px 4px 10px 0px rgba(255, 255, 255, 0.85)',
+                color:"white"
+            }}>
+                <Typography fontSize={25}>Welcome to our Chat Support service! </Typography>
+                <Typography fontSize={25}>Please login or sign up using the buttons above</Typography>
+                <Typography fontSize={25}>We hope you will have all your questions answered</Typography>
+            </Box>
+            
+        </Box>
+       
+    )
   }
   
-  return (
-    <Box
-    width="100vw"
-    height="100vh"
-    display="flex"
-    flexDirection="column"
-    justifyContent="center"
-    alignItems="center"
-    sx={{
-      backgroundImage:`url(${backgroundImage.src})` ,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }}>
-      <Typography
-      width="550px"
-      bgcolor={"rgba(255, 255, 255, 0.7)"}
-      height="10%"
-      marginY={2}
-      borderRadius={6}
-      justifyContent="center"
-      alignItems="center"
-      display="flex"
-      fontSize={30}
-      fontFamily={"Outfit"}
-      color={"blueGrey"}
-      > 
-        Chat support</Typography>
-      {/** The message history */}
-      <Stack 
-      direction={'column'} 
-      width="550px" 
-      height="85%" 
-      spacing={2} 
-      paddingY={2}
-      paddingX={2}
-      bgcolor={"rgba(255, 255, 255, 0.7)"}
-      borderRadius={6}
-      >
-        {/** These will be our actual messages */}
-        <Stack 
-        direction={'column'} 
-        spacing={2}
-        flexGrow={1}
-        overflow="auto"
-        maxHeight="100%">
-          {
-            messages.map((message, index) => (
-              <Box
-              key={index}
-              display="flex"
-              justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end'}>
-                <Box
-                bgcolor={message.role === 'assistant' ? 'primary.main' : 'secondary.main'}
-                color="white"
-                borderRadius={16}
-                p={3}
-                fontFamily={"Outfit"}
-                fontSize={18}>
-                  {message.content}
-                </Box>
-              </Box>
-            ))}
-        </Stack>
-        {/** Where the user enters messages */}
-        <Stack direction={"row"} spacing={2}>
-          <TextField 
-          label="Message" 
-          fullWidth 
-          value={message} 
-          onChange={(e) => setMessage(e.target.value)}/>
-          <Button variant="contained" onClick={sendMessage}>
-            Send</Button>
-        </Stack>
-      </Stack>
-    </Box>
-  )
-}
